@@ -4,7 +4,8 @@
 > 制定日期：2026-07-09  
 > 比赛：2026-09-26 06:30 发枪（[2026 金山岭长城越野赛](https://reg.zuicool.com/13750)）  
 > 赛道：约 95 km · 累计爬升 **5055 m** · 关门 27 h  
-> 画像来源：`plans/running_profile_zhangchaojie.md`
+> 画像来源：`plans/running_profile_zhangchaojie.md`  
+> 训练类型对照表：`plans/training_type_te_reference.md`
 
 ---
 
