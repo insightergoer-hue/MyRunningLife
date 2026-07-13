@@ -1,6 +1,7 @@
 # 训练日志（zhangchaojie）
 
 > 金山岭 100 KM 备赛 · 每次跑完更新  
+> **规则：用户发来训练结果后，必须先追加本文件，再给分析建议**  
 > 课表：`../jinshanling_100km_11week_plan.md` · 对照表：`training_type_te_reference.md`  
 > 最大心率：**192 bpm**（Garmin 实测）
 
