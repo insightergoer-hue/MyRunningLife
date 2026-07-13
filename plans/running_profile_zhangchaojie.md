@@ -50,6 +50,7 @@
 
 - 完整课表：`../jinshanling_100km_11week_plan.md`
 - 训练类型 × 有氧 TE 对照表：`training_type_te_reference.md`
+- **训练日志**：`training_log.md`（每次跑完更新）
 - 比赛：2026-09-26 金山岭 100 KM（95 km / 5055 m+）
 - 用户希望每周根据 Garmin 反馈动态调整课表
 
