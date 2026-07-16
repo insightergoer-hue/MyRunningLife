@@ -5,6 +5,7 @@
 > 课表：`../jinshanling_100km_11week_plan.md` · 对照表：`training_type_te_reference.md`  
 > 最大心率：**192 bpm**（Garmin 实测）  
 > **2026-07-13**：升级每周 4 次课；**2026-07-13 晚**：进山调整为每月最多 2 次周末（W3/W5/W7/W9）  
+> **2026-07-16**：比赛袜已购 — 拓路者 Pioneer Camp **XPS411008**（M）×2  
 > **准备度指数**：`jinshanling_readiness_index.md`（每次训练后更新 R / P）
 
 **评分规则**：1 = 很好，10 = 很差
