@@ -63,6 +63,18 @@ alwaysApply: true
 
 力量明细见课表固定模块；W3（2026-07-21）起正式恢复每周 2 次。
 
+## Garmin 自动同步数据（优先读取）
+
+本机脚本可将 Garmin Connect 日数据写入仓库（见 `scripts/garmin/README.md`）：
+- 摘要：`plans/garmin/daily/YYYY-MM-DD.md`
+- 原始：`plans/garmin/raw/YYYY-MM-DD.json`
+
+当用户说「Garmin 已同步 / 看昨天数据 / 分析今天恢复」或提问涉及睡眠/恢复/训练负荷时：
+1. **先读**对应日期的 `plans/garmin/daily/*.md`（必要时对照 raw JSON）
+2. 用其中的静息心率、睡眠、HRV、Body Battery、Training Readiness、活动 TE/心率作客观依据
+3. 再结合用户主观评分（膝/踝/疲劳）给建议；**机器数据不能替代疼痛主诉**
+4. 若日文件存在且含完整活动数据，落盘 `training_log.md` 时应优先采用文件中的 Garmin 数字，用户口头补充主观分即可
+
 ## 训练记录落盘（必做，不可省略）
 
 用户发来**任何一次训练结果**（完成、减量、跳过、改课）时，**必须先写入** `plans/training_log.md`，再给分析和建议。

@@ -7,5 +7,12 @@ Thumbs.db
 # Local secrets (if any added later)
 .env
 .env.*
+!.env.example
+scripts/garmin/.env
 credentials.json
 *.pem
+
+# Garmin Connect session tokens (never commit)
+.garminconnect*
+**/.garminconnect*
+garmin_tokens/
