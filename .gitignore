@@ -16,6 +16,7 @@ credentials.json
 .garminconnect*
 **/.garminconnect*
 garmin_tokens/
+.garmin_tokens/
 
 # Garmin raw API dumps (local only; daily markdown is enough for git)
 plans/garmin/raw/**
