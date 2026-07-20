@@ -16,3 +16,8 @@ credentials.json
 .garminconnect*
 **/.garminconnect*
 garmin_tokens/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
