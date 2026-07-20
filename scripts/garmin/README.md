@@ -32,13 +32,14 @@ python3 scripts/garmin/sync_garmin.py --days 3
 ```
 
 输出：
-- 可读摘要：`plans/garmin/daily/YYYY-MM-DD.md`
-- 原始 JSON：`plans/garmin/raw/YYYY-MM-DD.json`
+- 可读摘要：`plans/garmin/daily/YYYY-MM-DD.md`（可进 git）
+- 原始 JSON：`plans/garmin/raw/YYYY-MM-DD.json`（**仅本机**，已在 `.gitignore`，不上传）
 
 ## 自动跑 + 推送到 GitHub
 
-1. `.env` 里设 `GARMIN_GIT_AUTO_PUSH=true`（脚本会 `git add/commit/push`）
+1. `.env` 里设 `GARMIN_GIT_AUTO_PUSH=true`（脚本只 `git add/commit/push` 日摘要 md，不含 raw）
 2. 或用系统定时任务只同步，你手动 push
+
 
 ### macOS（LaunchAgent 示例：每天 8:00）
 
@@ -54,8 +55,9 @@ python3 scripts/garmin/sync_garmin.py --days 3
 
 ## 安全
 
-- **不要**把 `.env`、token 目录提交进 git（已在 `.gitignore`）
+- **不要**把 `.env`、token 目录、`plans/garmin/raw/*.json` 提交进 git（已在 `.gitignore`）
 - 云端 Agent **不会**替你保存 Garmin 密码；同步在你本机完成
+
 
 ## 和教练的配合
 
