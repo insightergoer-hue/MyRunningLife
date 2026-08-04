@@ -7,7 +7,8 @@
 > 赛道：约 95 km · 累计爬升 **5055 m** · 关门 27 h  
 > 画像来源：`plans/running_profile_zhangchaojie.md`  
 > 训练类型对照表：`plans/training_type_te_reference.md`  
-> 训练日志：`plans/training_log.md`
+> 训练日志：`plans/training_log.md`  
+> **备赛法则（教练长期记忆 · 2026-08-04）**：`plans/ultra_100km_coaching_laws.md` — 调课必须遵循
 
 ---
 
