@@ -2,18 +2,26 @@ name: Garmin daily sync
 
 on:
   schedule:
-    # 每天 08:00（北京时间）= 00:00 UTC
+    # 北京时间 = UTC+8。多时段自动拉，减少手动 Run workflow。
+    # 08:00 北京：昨夜睡眠 + 晨起恢复（today）并补昨天
     - cron: "0 0 * * *"
+    # 14:00 北京：午前活动补拉
+    - cron: "0 6 * * *"
+    # 22:30 北京：晚训后常见窗口（today）
+    - cron: "30 14 * * *"
+    # 次日 00:30 北京：收尾当天很晚结束的训练
+    - cron: "30 16 * * *"
   workflow_dispatch:
     inputs:
       mode:
-        description: "Sync mode"
+        description: "Sync mode（定时任务会自动拉 yesterday+today，一般不必手动）"
         required: true
-        default: yesterday
+        default: today
         type: choice
         options:
           - yesterday
           - today
+          - both
           - days
           - date
       days:
@@ -63,6 +71,10 @@ jobs:
           GARMINTOKENS: ${{ github.workspace }}/.garmin_tokens
           # Actions 里用后面的 git 步骤提交，不走脚本内 push
           GARMIN_GIT_AUTO_PUSH: "false"
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          INPUT_DAYS: ${{ github.event.inputs.days }}
+          INPUT_DATE: ${{ github.event.inputs.date }}
         run: |
           set -euo pipefail
           if [ -z "${GARMIN_EMAIL:-}" ] || [ -z "${GARMIN_PASSWORD:-}" ]; then
@@ -72,16 +84,26 @@ jobs:
           export GARMIN_IS_CN="${GARMIN_IS_CN:-true}"
           mkdir -p .garmin_tokens
 
-          MODE="${{ github.event.inputs.mode || 'yesterday' }}"
+          # 定时：固定拉昨天 + 今天（覆盖睡眠/恢复/当晚训练）
+          if [ "${EVENT_NAME}" = "schedule" ]; then
+            MODE="both"
+          else
+            MODE="${INPUT_MODE:-both}"
+          fi
+
           case "$MODE" in
             today)
               python3 scripts/garmin/sync_garmin.py --today
               ;;
+            both)
+              python3 scripts/garmin/sync_garmin.py
+              python3 scripts/garmin/sync_garmin.py --today
+              ;;
             days)
-              python3 scripts/garmin/sync_garmin.py --days "${{ github.event.inputs.days || '3' }}"
+              python3 scripts/garmin/sync_garmin.py --days "${INPUT_DAYS:-3}"
               ;;
             date)
-              DATE="${{ github.event.inputs.date }}"
+              DATE="${INPUT_DATE:-}"
               if [ -z "$DATE" ]; then
                 echo "mode=date requires inputs.date"
                 exit 1

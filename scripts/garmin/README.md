@@ -19,15 +19,24 @@
 ### 2. 跑起来
 
 - 工作流：`.github/workflows/garmin-sync.yml`
-- 定时：每天 **北京时间 08:00** 自动同步「昨天」
-- 手动：仓库 **Actions** → **Garmin daily sync** → **Run workflow**
+- **自动（不必每次手动）**，北京时间大致：
+  | 时间 | 拉什么 |
+  |------|--------|
+  | **08:00** | 昨天 + 今天（昨夜睡眠、晨起恢复） |
+  | **14:00** | 昨天 + 今天（午前活动补拉） |
+  | **22:30** | 昨天 + 今天（晚训后） |
+  | **次日 00:30** | 昨天 + 今天（很晚结束的训练收尾） |
+- 手动（偶尔补洞）：仓库 **Actions** → **Garmin daily sync** → **Run workflow**  
+  - 默认建议 `mode=both` 或 `today`
 
-成功后会自动 commit `plans/garmin/daily/*.md` 到 `main`。
+成功后会自动 commit `plans/garmin/daily/*.md` 到 `main`。教练读取仓库文件即可，**仍不要把 Garmin 密码发到聊天**。
 
 ### 3. 注意
 
 - 若以后打开 MFA，Actions 会失效，改回本机同步
 - Garmin 偶发风控时看 Actions 日志；本机跑一次通常可恢复
+- GitHub 定时任务可能有约 ±15–30 分钟漂移，属正常
+- 刚结束运动后 Connect 有时要几分钟才出完整活动；若 22:30 那次还不全，00:30 会再补一次
 
 ---
 
