@@ -2,8 +2,8 @@ name: Garmin daily sync
 
 on:
   schedule:
-    # 每天 07:00（北京时间）= 23:00 UTC（前一日）— 早于 08:00 训练提醒，便于读恢复数据
-    - cron: "0 23 * * *"
+    # 每天 09:00（北京时间）= 01:00 UTC — 睡眠通常已结束，早于 09:30 训练提醒
+    - cron: "0 1 * * *"
   workflow_dispatch:
     inputs:
       mode:
