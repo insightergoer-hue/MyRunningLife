@@ -1,14 +1,24 @@
-# Git 工作流（本人 2026-08-27 起强制）
+---
+description: 禁止开 PR；所有修改直接推 main（本人强制）
+alwaysApply: true
+---
 
-**本人要求：不用开 PR；以后所有修改直接合入 `main`。**
+# Git 工作流：禁止开 PR（本人 2026-08-27 强制 · 同日再确认）
 
-## 执行
+**本人要求：以后不再开 PR。所有修改直接合入 `main`。**
 
-1. 在 `main` 上改（或短分支改完后立刻 `merge`/`ff` 进 `main`）
-2. `git commit` → **`git push origin main`**
-3. **禁止**为交付再开 Pull Request / `ManagePullRequest create_pr`
-4. 已有草稿 PR 可忽略或自行关掉；新工作不要再挂 PR
+## 必须做
 
-## 例外
+1. 在 **`main`** 上直接改
+2. `git add` → `git commit` → **`git push origin main`**
+3. 交付完成以 **main 上有 commit** 为准
 
-仅当 `push` 到 `main` 被权限拒绝时，才临时用分支，并在对话里说明阻塞原因（不要默默改回开 PR 流程）。
+## 禁止做
+
+1. **禁止** `gh pr create` / `ManagePullRequest create_pr` / 新开任何 Pull Request
+2. **禁止** 为「规范流程」再开 `cursor/...` 功能分支挂草稿 PR
+3. **禁止** 改完只留在分支、等用户手动合 PR
+
+## 例外（仅此一条）
+
+仅当 `git push origin main` **被权限拒绝**时：在对话里说明阻塞，再临时用分支；**不要**默默改回开 PR 习惯。
