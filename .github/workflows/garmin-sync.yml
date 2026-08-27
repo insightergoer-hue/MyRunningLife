@@ -2,16 +2,17 @@ name: Garmin daily sync
 
 on:
   schedule:
-    # 每天 08:00（北京时间）= 00:00 UTC
-    - cron: "0 0 * * *"
+    # 每天 09:00（北京时间）= 01:00 UTC — 睡眠通常已结束，早于 09:30 训练提醒
+    - cron: "0 1 * * *"
   workflow_dispatch:
     inputs:
       mode:
         description: "Sync mode"
         required: true
-        default: yesterday
+        default: morning
         type: choice
         options:
+          - morning
           - yesterday
           - today
           - days
@@ -72,7 +73,7 @@ jobs:
           export GARMIN_IS_CN="${GARMIN_IS_CN:-true}"
           mkdir -p .garmin_tokens
 
-          MODE="${{ github.event.inputs.mode || 'yesterday' }}"
+          MODE="${{ github.event.inputs.mode || 'morning' }}"
           case "$MODE" in
             today)
               python3 scripts/garmin/sync_garmin.py --today
@@ -88,7 +89,12 @@ jobs:
               fi
               python3 scripts/garmin/sync_garmin.py --date "$DATE"
               ;;
-            *)
+            yesterday)
+              python3 scripts/garmin/sync_garmin.py
+              ;;
+            morning|*)
+              # 定时任务默认：同步「今天（含昨夜恢复）」+「昨天（含完整活动）」
+              python3 scripts/garmin/sync_garmin.py --today
               python3 scripts/garmin/sync_garmin.py
               ;;
           esac
