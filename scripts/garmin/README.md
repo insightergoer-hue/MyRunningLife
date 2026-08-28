@@ -20,7 +20,7 @@
 
 - 工作流：`.github/workflows/garmin-sync.yml`
 - 定时（北京时间）：**09:07 主** · **09:26 备份** · **12:13 兜底**，每次同步 **今天 + 昨天**
-- **09:30 训练提醒**依赖此同步；Garmin 须在前一晚/早起后将手表同步到 Connect
+- **10:05 训练提醒**（Cursor 云端 timer）依赖此同步；Garmin 须在前一晚/早起后将手表同步到 Connect
 - 手动：仓库 **Actions** → **Garmin daily sync** → **Run workflow**（默认 mode=`morning`）
 
 成功后会自动 commit `plans/garmin/daily/*.md` 到 `main`。
@@ -66,6 +66,6 @@ python3 scripts/garmin/sync_garmin.py --days 3
 
 ## 和教练的配合
 
-- **自动**：GitHub Actions **09:00** 写入 `plans/garmin/daily/` → Cloud Agent **09:30** 每日提醒读最新恢复数据
+- **自动**：GitHub Actions **09:07/09:26** 写入 `plans/garmin/daily/` → Cloud Agent **10:05** 每日提醒读最新恢复数据
 - **手动**：同步后进仓库说一声「Garmin 已同步」，或直接问「今天练什么 / 分析恢复」
 - 膝/踝等主观评分仍需你补充
