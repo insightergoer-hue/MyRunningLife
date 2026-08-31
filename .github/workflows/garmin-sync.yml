@@ -2,14 +2,16 @@ name: Garmin daily sync
 
 on:
   schedule:
-    # 主：北京 09:07（= 01:07 UTC）。避开整点高峰，GitHub 对 cron 只保证「尽力」，
-    # 整点排队最容易被丢弃。
+    # 北京 09:07 / 09:26 / 09:52 / 10:00 — 覆盖 10:05 每日提醒前的多个窗口
     - cron: "7 1 * * *"
-    # 备份：北京 09:26（= 01:26 UTC）。在 10:05 每日提醒之前；
-    # 脚本覆盖写同一天文件，无变化时不会产生空提交。
     - cron: "26 1 * * *"
-    # 兜底：北京 12:13（= 04:13 UTC），防上午两次都被丢。
+    - cron: "52 1 * * *"
+    - cron: "0 2 * * *"
+    # 北京 12:13 上午兜底
     - cron: "13 4 * * *"
+    # 北京 18:07 / 22:07 — 赛后/晚间手表同步到 Connect 后再拉一次
+    - cron: "7 10 * * *"
+    - cron: "7 14 * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -33,6 +35,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: garmin-daily-sync
+  cancel-in-progress: false
 
 jobs:
   sync:
@@ -65,10 +71,8 @@ jobs:
         env:
           GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
-          # Secret 可覆盖；未设置时默认国内站 true（本仓库用户为 garmin.cn）
           GARMIN_IS_CN: ${{ secrets.GARMIN_IS_CN }}
           GARMINTOKENS: ${{ github.workspace }}/.garmin_tokens
-          # Actions 里用后面的 git 步骤提交，不走脚本内 push
           GARMIN_GIT_AUTO_PUSH: "false"
         run: |
           set -euo pipefail
@@ -99,7 +103,6 @@ jobs:
               python3 scripts/garmin/sync_garmin.py
               ;;
             morning|*)
-              # 定时任务默认：同步「今天（含昨夜恢复）」+「昨天（含完整活动）」
               python3 scripts/garmin/sync_garmin.py --today
               python3 scripts/garmin/sync_garmin.py
               ;;
@@ -115,6 +118,7 @@ jobs:
             echo "No markdown changes to commit."
             exit 0
           fi
+          git pull --rebase origin main
           DAYS=$(git diff --cached --name-only | xargs -n1 basename | sed 's/\.md$//' | paste -sd, -)
           git commit -m "Sync Garmin daily data (${DAYS})"
-          git push
+          git push origin HEAD:main
