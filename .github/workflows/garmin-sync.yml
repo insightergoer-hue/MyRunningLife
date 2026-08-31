@@ -118,7 +118,6 @@ jobs:
           set -euo pipefail
           git config user.name "garmin-sync-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add plans/garmin/daily/*.md || true
           if git diff --cached --quiet; then
             echo "No markdown changes to commit."
@@ -126,4 +125,5 @@ jobs:
           fi
           DAYS=$(git diff --cached --name-only | xargs -n1 basename | sed 's/\.md$//' | paste -sd, -)
           git commit -m "Sync Garmin daily data (${DAYS})"
+          git pull --rebase origin main
           git push origin HEAD:main
