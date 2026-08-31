@@ -18,6 +18,13 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      GARMIN_EMAIL:
+        required: true
+      GARMIN_PASSWORD:
+        required: true
+      GARMIN_IS_CN:
+        required: false
 
 permissions:
   contents: write
