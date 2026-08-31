@@ -10,9 +10,9 @@ on:
     - cron: "53 1 * * *"
     # 北京 10:04 — 提醒前 1 分钟（硬保底）
     - cron: "4 2 * * *"
-    # TEMP TEST 2026-08-31 — 北京 18:03 / 18:06（验证 schedule 能触发 watchdog）
-    - cron: "3 10 * * *"
-    - cron: "6 10 * * *"
+    # TEMP TEST 2026-08-31 — 北京 18:25 / 18:30（新 cron 需提前 ~10min 注册）
+    - cron: "25 10 * * *"
+    - cron: "30 10 * * *"
   workflow_dispatch:
 
 jobs:
