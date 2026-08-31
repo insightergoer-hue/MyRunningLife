@@ -1,4 +1,5 @@
 name: Garmin daily sync
+# push to this file on main also triggers a sync (smoke test / post-deploy verify)
 
 on:
   push:
