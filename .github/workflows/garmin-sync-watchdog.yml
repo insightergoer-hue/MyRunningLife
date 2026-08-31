@@ -5,11 +5,6 @@ name: Garmin sync watchdog (pre-reminder)
 # 解决 GitHub cron 延迟/丢失导致晨间数据缺失的复发问题。
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/garmin-sync-reusable.yml'
-      - '.github/workflows/garmin-sync-watchdog.yml'
   schedule:
     # 北京 09:53 — 提醒前 12 分钟
     - cron: "53 1 * * *"
