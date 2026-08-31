@@ -1,6 +1,10 @@
 name: Garmin daily sync
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/garmin-sync.yml'
   schedule:
     # 北京 09:07 / 09:26 / 09:52 / 10:00 — 覆盖 10:05 每日提醒前的多个窗口
     - cron: "7 1 * * *"
