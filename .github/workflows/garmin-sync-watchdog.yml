@@ -19,6 +19,8 @@ on:
 
 jobs:
   force-morning-sync:
+    permissions:
+      contents: write
     uses: ./.github/workflows/garmin-sync-reusable.yml
     with:
       mode: morning
