@@ -7,10 +7,11 @@
 | 工作流 | 作用 |
 |--------|------|
 | `garmin-sync-reusable.yml` | 核心：拉 Garmin + `git-auto-commit-action` 提交 |
-| `garmin-sync.yml` | 定时（7 次/天）+ 手动 `workflow_dispatch` |
-| **`garmin-sync-watchdog.yml`** | **09:53 / 10:04 北京强制再同步**（10:05 提醒前硬保底） |
+| `garmin-sync.yml` | 定时（含 09:53/10:04 watchdog）+ 手动 `workflow_dispatch` |
 
-**为何需要 watchdog**：GitHub `schedule` 只承诺「尽力执行」，本仓库多次出现 **09:07 cron 拖到下午** 才跑。watchdog 在提醒前 **无条件再拉一次**（覆盖写，无变化不 commit）。
+**为何需要 watchdog 时段**：GitHub `schedule` 只承诺「尽力执行」，本仓库多次出现 **09:07 cron 拖到下午** 才跑。09:53 / 10:04 在提醒前 **无条件再拉一次**（覆盖写，无变化不 commit）。
+
+> 注：watchdog 时段合并进 `garmin-sync.yml`（2026-08-31）。独立 `garmin-sync-watchdog.yml` 已移除——新 workflow 文件的 cron 可能 **24h 内不触发**。
 
 ## GitHub Actions 配置
 
@@ -29,7 +30,7 @@
 - **12:13** — 上午兜底
 - **18:07 / 22:07** — 赛后/晚间手表同步后再拉
 
-手动：Actions → **Garmin daily sync** 或 **Garmin sync watchdog** → Run workflow。
+手动：Actions → **Garmin daily sync** → Run workflow。
 
 ### 冒烟检查
 
