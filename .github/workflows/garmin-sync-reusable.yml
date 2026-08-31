@@ -1,0 +1,103 @@
+name: Garmin sync (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      mode:
+        description: "Sync mode"
+        required: false
+        type: string
+        default: morning
+      days:
+        description: "When mode=days"
+        required: false
+        type: string
+        default: "3"
+      date:
+        description: "When mode=date (YYYY-MM-DD)"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: garmin-daily-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/garmin/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/garmin/requirements.txt
+
+      - name: Restore Garmin token cache
+        uses: actions/cache@v4
+        with:
+          path: .garmin_tokens
+          key: garmin-tokens-v1
+          restore-keys: |
+            garmin-tokens-
+
+      - name: Sync from Garmin Connect
+        env:
+          GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
+          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+          GARMIN_IS_CN: ${{ secrets.GARMIN_IS_CN }}
+          GARMINTOKENS: ${{ github.workspace }}/.garmin_tokens
+          GARMIN_GIT_AUTO_PUSH: "false"
+        run: |
+          set -euo pipefail
+          if [ -z "${GARMIN_EMAIL:-}" ] || [ -z "${GARMIN_PASSWORD:-}" ]; then
+            echo "Missing secrets: set GARMIN_EMAIL and GARMIN_PASSWORD in repo Settings → Secrets."
+            exit 1
+          fi
+          export GARMIN_IS_CN="${GARMIN_IS_CN:-true}"
+          mkdir -p .garmin_tokens
+
+          MODE="${{ inputs.mode }}"
+          case "$MODE" in
+            today)
+              python3 scripts/garmin/sync_garmin.py --today
+              ;;
+            days)
+              python3 scripts/garmin/sync_garmin.py --days "${{ inputs.days }}"
+              ;;
+            date)
+              DATE="${{ inputs.date }}"
+              if [ -z "$DATE" ]; then
+                echo "mode=date requires inputs.date"
+                exit 1
+              fi
+              python3 scripts/garmin/sync_garmin.py --date "$DATE"
+              ;;
+            yesterday)
+              python3 scripts/garmin/sync_garmin.py
+              ;;
+            morning|*)
+              python3 scripts/garmin/sync_garmin.py --today
+              python3 scripts/garmin/sync_garmin.py
+              ;;
+          esac
+
+      - name: Commit daily markdown
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Sync Garmin daily data
+          file_pattern: plans/garmin/daily/*.md
+          commit_user_name: garmin-sync-bot
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com

@@ -1,0 +1,25 @@
+name: Garmin sync watchdog (pre-reminder)
+
+# 在 10:05 每日训练提醒之前，强制再拉一次 Garmin。
+# 不依赖「检查是否过期」——直接同步，覆盖写同一天文件；无变化则不 commit。
+# 解决 GitHub cron 延迟/丢失导致晨间数据缺失的复发问题。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/garmin-sync-reusable.yml'
+      - '.github/workflows/garmin-sync-watchdog.yml'
+  schedule:
+    # 北京 09:53 — 提醒前 12 分钟
+    - cron: "53 1 * * *"
+    # 北京 10:04 — 提醒前 1 分钟（硬保底）
+    - cron: "4 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  force-morning-sync:
+    uses: ./.github/workflows/garmin-sync-reusable.yml
+    with:
+      mode: morning
+    secrets: inherit

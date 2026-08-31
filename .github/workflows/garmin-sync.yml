@@ -1,20 +1,15 @@
 name: Garmin daily sync
-# push to this file on main also triggers a sync (smoke test / post-deploy verify)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/garmin-sync.yml'
   schedule:
-    # 北京 09:07 / 09:26 / 09:52 / 10:00 — 覆盖 10:05 每日提醒前的多个窗口
+    # 北京 09:07 / 09:26 / 09:52 / 10:00
     - cron: "7 1 * * *"
     - cron: "26 1 * * *"
     - cron: "52 1 * * *"
     - cron: "0 2 * * *"
     # 北京 12:13 上午兜底
     - cron: "13 4 * * *"
-    # 北京 18:07 / 22:07 — 赛后/晚间手表同步到 Connect 后再拉一次
+    # 北京 18:07 / 22:07 晚间补拉
     - cron: "7 10 * * *"
     - cron: "7 14 * * *"
   workflow_dispatch:
@@ -38,92 +33,11 @@ on:
         description: "When mode=date: YYYY-MM-DD"
         required: false
 
-permissions:
-  contents: write
-
-concurrency:
-  group: garmin-daily-sync
-  cancel-in-progress: false
-
 jobs:
   sync:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: scripts/garmin/requirements.txt
-
-      - name: Install dependencies
-        run: pip install -r scripts/garmin/requirements.txt
-
-      - name: Restore Garmin token cache
-        uses: actions/cache@v4
-        with:
-          path: .garmin_tokens
-          key: garmin-tokens-v1
-          restore-keys: |
-            garmin-tokens-
-
-      - name: Sync from Garmin Connect
-        env:
-          GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
-          GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
-          GARMIN_IS_CN: ${{ secrets.GARMIN_IS_CN }}
-          GARMINTOKENS: ${{ github.workspace }}/.garmin_tokens
-          GARMIN_GIT_AUTO_PUSH: "false"
-        run: |
-          set -euo pipefail
-          if [ -z "${GARMIN_EMAIL:-}" ] || [ -z "${GARMIN_PASSWORD:-}" ]; then
-            echo "Missing secrets: set GARMIN_EMAIL and GARMIN_PASSWORD in repo Settings → Secrets."
-            exit 1
-          fi
-          export GARMIN_IS_CN="${GARMIN_IS_CN:-true}"
-          mkdir -p .garmin_tokens
-
-          MODE="${{ github.event.inputs.mode || 'morning' }}"
-          case "$MODE" in
-            today)
-              python3 scripts/garmin/sync_garmin.py --today
-              ;;
-            days)
-              python3 scripts/garmin/sync_garmin.py --days "${{ github.event.inputs.days || '3' }}"
-              ;;
-            date)
-              DATE="${{ github.event.inputs.date }}"
-              if [ -z "$DATE" ]; then
-                echo "mode=date requires inputs.date"
-                exit 1
-              fi
-              python3 scripts/garmin/sync_garmin.py --date "$DATE"
-              ;;
-            yesterday)
-              python3 scripts/garmin/sync_garmin.py
-              ;;
-            morning|*)
-              python3 scripts/garmin/sync_garmin.py --today
-              python3 scripts/garmin/sync_garmin.py
-              ;;
-          esac
-
-      - name: Commit daily markdown
-        run: |
-          set -euo pipefail
-          git config user.name "garmin-sync-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add plans/garmin/daily/*.md || true
-          if git diff --cached --quiet; then
-            echo "No markdown changes to commit."
-            exit 0
-          fi
-          DAYS=$(git diff --cached --name-only | xargs -n1 basename | sed 's/\.md$//' | paste -sd, -)
-          git commit -m "Sync Garmin daily data (${DAYS})"
-          git pull --rebase origin main
-          git push origin HEAD:main
+    uses: ./.github/workflows/garmin-sync-reusable.yml
+    with:
+      mode: ${{ github.event.inputs.mode || 'morning' }}
+      days: ${{ github.event.inputs.days || '3' }}
+      date: ${{ github.event.inputs.date || '' }}
+    secrets: inherit
