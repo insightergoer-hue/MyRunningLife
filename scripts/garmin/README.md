@@ -43,6 +43,7 @@ python3 scripts/garmin/sync_garmin.py --today
 
 ## 和教练的配合
 
-- **自动**：watchdog **10:04** 写入 → Cloud Agent **10:05** 提醒读 `plans/garmin/daily/`
+- **自动**：**09:00** 同步写入 → Cloud Agent **10:05** 提醒读 `plans/garmin/daily/`
 - **手动**：同步后说「Garmin 已同步」或问「今天练什么」
 - 膝/踝主观分仍需你补充
+- 晨间若缺数据：Actions 手动跑一次，或本机 `sync_garmin.py --today`
