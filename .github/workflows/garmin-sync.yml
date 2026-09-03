@@ -2,18 +2,8 @@ name: Garmin daily sync
 
 on:
   schedule:
-    # 北京 09:07 / 09:26 / 09:52 / 09:53(watchdog) / 10:00 / 10:04(watchdog)
-    - cron: "7 1 * * *"
-    - cron: "26 1 * * *"
-    - cron: "52 1 * * *"
-    - cron: "53 1 * * *"
-    - cron: "0 2 * * *"
-    - cron: "4 2 * * *"
-    # 北京 12:13 上午兜底
-    - cron: "13 4 * * *"
-    # 北京 18:07 / 22:07 晚间补拉
-    - cron: "7 10 * * *"
-    - cron: "7 14 * * *"
+    # 北京 09:00 — 每日一次（赶在 10:05 训练提醒前）
+    - cron: "0 1 * * *"
   workflow_dispatch:
     inputs:
       mode:
