@@ -1,0 +1,4 @@
+{
+  "name": "myrunninglife",
+  "install": "pip3 install --break-system-packages -r scripts/garmin/requirements.txt"
+}
