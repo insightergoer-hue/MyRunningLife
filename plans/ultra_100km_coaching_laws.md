@@ -2,8 +2,9 @@
 
 > 建立：2026-08-04  
 > 用途：此后所有调课、课前目标、训后分析，**必须遵循**本文件；与个人约束冲突时，以「完赛 + 不冒进」为准做降级，不拿法则当加量借口。  
-> 对象：zhangchaojie · 金山岭 100 KM（~95 km / +5055 m）· B 档 24–25 h  
-> 个人约束见：`running_profile_zhangchaojie.md`、课表「教练把控原则」
+> 对象：zhangchaojie · **当前主赛：荔波小七孔 100 KM（~100 km / +4283 m）· B 档 22:30–24:00**  
+> 前序完赛：金山岭 2026-09-26 · 23:09 / +5123 m  
+> 个人约束见：`running_profile_zhangchaojie.md`、`libo_100km_8week_plan.md`
 
 ---
 
