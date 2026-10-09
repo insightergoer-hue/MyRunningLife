@@ -2,8 +2,8 @@ name: Garmin daily sync
 
 on:
   schedule:
-    # 北京 09:00 — 每日一次（赶在 10:05 训练提醒前）
-    - cron: "0 1 * * *"
+    # 北京 02:00 — 每日一次（便于纳入前一日晚训；GitHub cron 可能延后）
+    - cron: "0 18 * * *"
   workflow_dispatch:
     inputs:
       mode:

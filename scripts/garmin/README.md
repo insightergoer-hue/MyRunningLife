@@ -7,7 +7,7 @@
 | 工作流 | 作用 |
 |--------|------|
 | `garmin-sync-reusable.yml` | 核心：拉 Garmin + `git-auto-commit-action` 提交 |
-| `garmin-sync.yml` | 定时（每天上午 1 次）+ 手动 `workflow_dispatch` |
+| `garmin-sync.yml` | 定时（每天凌晨 1 次）+ 手动 `workflow_dispatch` |
 
 ## GitHub Actions 配置
 
@@ -21,7 +21,7 @@
 
 ### 定时（北京时间）
 
-- **09:00** — 每日一次自动同步（赶在 10:05 训练提醒前）
+- **02:00** — 每日一次自动同步（UTC `0 18 * * *`；便于纳入前一日晚训）
 - GitHub cron 可能延迟；缺数据时到 Actions 手动 **Run workflow**
 
 手动：Actions → **Garmin daily sync** → Run workflow。
@@ -43,7 +43,7 @@ python3 scripts/garmin/sync_garmin.py --today
 
 ## 和教练的配合
 
-- **自动**：**09:00** 同步写入 → Cloud Agent **10:05** 提醒读 `plans/garmin/daily/`
+- **自动**：**02:00** 同步写入 `plans/garmin/daily/`（含昨天完整日 + 当天已有数据）
 - **手动**：同步后说「Garmin 已同步」或问「今天练什么」
 - 膝/踝主观分仍需你补充
 - 晨间若缺数据：Actions 手动跑一次，或本机 `sync_garmin.py --today`
